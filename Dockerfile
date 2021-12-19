@@ -1,4 +1,5 @@
 # Copyright 2019 The xridge kubestone contributors.
+# Copyright 2021 Pratik raj .
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,9 +15,7 @@
 
 
 # Builder image
-FROM alpine:3.10 AS builder
-
-ENV SYSBENCH_VERSION 1.0.17
+FROM alpine:latest AS builder
 
 RUN apk add --no-cache --update \
         autoconf \
@@ -27,7 +26,7 @@ RUN apk add --no-cache --update \
         libtool \
         pkgconf
 
-RUN git clone https://github.com/akopytov/sysbench.git --branch ${SYSBENCH_VERSION} --depth 1
+RUN git clone https://github.com/akopytov/sysbench.git --depth 1
 
 WORKDIR /sysbench
 RUN ./autogen.sh && \
@@ -37,7 +36,7 @@ RUN ./autogen.sh && \
 
 
 # Target image
-FROM alpine:3.10
+FROM alpine:latest
 
 RUN apk add --no-cache libaio libgcc
 COPY --from=builder /usr/local/share/sysbench /usr/local/share/sysbench
